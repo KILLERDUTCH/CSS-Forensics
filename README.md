@@ -304,6 +304,27 @@ There is currently:
 
 Your CSS does not need to leave your browser.
 
+🌐 Live Demo
+
+Try CSS Forensics directly in your browser — no installation or setup required.
+
+▶️ "Launch CSS Forensics" (https://killerdutch.github.io/CSS-Forensics/)
+
+«100% client-side: Your CSS is analyzed locally in your browser and is never uploaded to a server.»
+
+Paste your stylesheet, run the forensic scan, and instantly inspect:
+
+- 📊 CSS statistics
+- 🚨 Risk signals
+- 🎨 Color usage
+- ♻️ Duplicate declarations
+- ⚠️ "!important" usage
+- 🧱 High "z-index" values
+- 📈 Property frequency
+- 📤 JSON reports
+
+No account. No backend. No dependencies.
+
 ---
 
 🧠 How It Works
