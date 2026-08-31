@@ -2,582 +2,612 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<meta name="description" content="CSS Forensics - Analyze CSS and detect code quality issues.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>CSS Forensics</title>
 
 <style>
-:root{
-  --bg:#07090d;
-  --panel:#0c1016;
-  --panel2:#10161e;
-  --border:#202b37;
-  --text:#e7edf4;
-  --muted:#778494;
-  --accent:#d8ff3e;
-  --warning:#ffbd45;
-  --danger:#ff5364;
-  --blue:#65b8ff;
+:root {
+    --bg: #07090d;
+    --panel: #0c1016;
+    --panel-2: #10161e;
+    --border: #202a35;
+    --text: #e8edf3;
+    --muted: #748191;
+    --accent: #d8ff3e;
+    --warning: #ffbd45;
+    --danger: #ff5364;
+    --info: #63b5ff;
 }
 
-*{
-  box-sizing:border-box;
+* {
+    box-sizing: border-box;
 }
 
-html{
-  scroll-behavior:smooth;
+html {
+    scroll-behavior: smooth;
 }
 
-body{
-  margin:0;
-  min-height:100vh;
-  background:var(--bg);
-  color:var(--text);
-  font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family:
+        Inter,
+        ui-sans-serif,
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
 }
 
-body:before{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  opacity:.25;
-  background-image:
-    linear-gradient(rgba(255,255,255,.025) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.025) 1px,transparent 1px);
-  background-size:32px 32px;
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 32px 32px;
 }
 
-button{
-  font:inherit;
-  cursor:pointer;
+button,
+textarea {
+    font: inherit;
 }
 
-.app{
-  position:relative;
-  max-width:1500px;
-  margin:auto;
-  padding:24px;
+button {
+    cursor: pointer;
+}
+
+.app {
+    position: relative;
+    max-width: 1500px;
+    margin: auto;
+    padding: 24px;
 }
 
 /* HEADER */
 
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:20px;
-  padding:10px 0 25px;
-  border-bottom:1px solid var(--border);
+header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 10px 0 24px;
+    border-bottom: 1px solid var(--border);
 }
 
-.brand{
-  display:flex;
-  align-items:center;
-  gap:14px;
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 14px;
 }
 
-.logo{
-  width:48px;
-  height:48px;
-  display:grid;
-  place-items:center;
-  border:1px solid #354352;
-  border-radius:8px;
-  color:var(--accent);
-  font:bold 17px monospace;
-  background:#0a0e13;
+.logo {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border: 1px solid #344250;
+    border-radius: 8px;
+    background: #0a0e13;
+    color: var(--accent);
+    font: 700 16px monospace;
 }
 
-h1{
-  margin:0;
-  font-size:20px;
-  letter-spacing:.08em;
+h1 {
+    margin: 0;
+    font-size: 20px;
+    letter-spacing: .08em;
 }
 
-h1 span{
-  color:var(--accent);
+h1 span {
+    color: var(--accent);
 }
 
-.subtitle{
-  margin-top:3px;
-  color:var(--muted);
-  font-size:10px;
-  letter-spacing:.17em;
-  text-transform:uppercase;
+.subtitle {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    letter-spacing: .17em;
+    text-transform: uppercase;
 }
 
-.actions{
-  display:flex;
-  gap:8px;
+.actions {
+    display: flex;
+    gap: 8px;
 }
 
-button{
-  border:1px solid var(--border);
-  border-radius:7px;
-  padding:10px 14px;
-  background:#0e141b;
-  color:var(--text);
-  font-size:10px;
-  font-weight:800;
-  letter-spacing:.08em;
+button {
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 10px 14px;
+    background: #0e141b;
+    color: var(--text);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .08em;
 }
 
-button:hover{
-  border-color:#40505f;
-  background:#131b24;
+button:hover {
+    border-color: #40505f;
+    background: #131b24;
 }
 
-.primary{
-  background:var(--accent);
-  border-color:var(--accent);
-  color:#080b08;
+button.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #080b08;
 }
 
-.primary:hover{
-  background:#e4ff67;
-  border-color:#e4ff67;
+button.primary:hover {
+    background: #e4ff67;
 }
 
 /* LAYOUT */
 
-.workspace{
-  display:grid;
-  grid-template-columns:minmax(380px,.9fr) minmax(500px,1.5fr);
-  gap:18px;
-  padding-top:18px;
+.workspace {
+    display: grid;
+    grid-template-columns: minmax(380px, .9fr) minmax(500px, 1.5fr);
+    gap: 18px;
+    padding-top: 18px;
+    align-items: start;
 }
 
-.panel{
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:rgba(12,16,22,.92);
-  overflow:hidden;
+.panel {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: rgba(12, 16, 22, .94);
+    overflow: hidden;
 }
 
 /* EDITOR */
 
-.editor{
-  position:sticky;
-  top:18px;
+.editor {
+    position: sticky;
+    top: 18px;
 }
 
-.panel-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:16px;
-  border-bottom:1px solid var(--border);
+.panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
 }
 
-.label{
-  color:var(--accent);
-  font-size:9px;
-  font-weight:900;
-  letter-spacing:.2em;
+.label {
+    color: var(--accent);
+    font-size: 9px;
+    font-weight: 900;
+    letter-spacing: .2em;
 }
 
-.panel-title{
-  margin-top:4px;
-  font-size:17px;
-  font-weight:700;
+.panel-title {
+    margin-top: 4px;
+    font-size: 17px;
+    font-weight: 700;
 }
 
-.meta{
-  color:var(--muted);
-  font:10px monospace;
+.meta {
+    color: var(--muted);
+    font: 10px monospace;
 }
 
-.editor-box{
-  display:flex;
-  height:610px;
-  background:#080b10;
+.editor-box {
+    display: flex;
+    height: 610px;
+    background: #080b10;
 }
 
-.lines{
-  width:48px;
-  padding:15px 9px;
-  color:#35404d;
-  text-align:right;
-  font:12px/1.65 monospace;
-  overflow:hidden;
-  user-select:none;
+.line-numbers {
+    width: 48px;
+    flex-shrink: 0;
+    padding: 15px 9px 15px 0;
+    overflow: hidden;
+    color: #35404d;
+    text-align: right;
+    font: 12px/1.65 monospace;
+    user-select: none;
 }
 
-textarea{
-  flex:1;
-  resize:none;
-  border:0;
-  outline:0;
-  padding:15px;
-  background:transparent;
-  color:#cbd5df;
-  font:12px/1.65 monospace;
-  tab-size:2;
+textarea {
+    flex: 1;
+    width: 100%;
+    resize: none;
+    border: 0;
+    outline: 0;
+    padding: 15px;
+    background: transparent;
+    color: #cbd5df;
+    font: 12px/1.65 monospace;
+    tab-size: 2;
 }
 
-textarea::selection{
-  background:rgba(216,255,62,.2);
+textarea::selection {
+    background: rgba(216,255,62,.2);
 }
 
-.panel-foot{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  padding:11px 14px;
-  border-top:1px solid var(--border);
-  color:var(--muted);
-  font-size:9px;
-  letter-spacing:.08em;
+.panel-foot {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 14px;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    font-size: 9px;
+    letter-spacing: .08em;
 }
 
-.dot{
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:var(--accent);
-  box-shadow:0 0 8px var(--accent);
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
 }
 
-.clear{
-  margin-left:auto;
-  border:0;
-  padding:4px;
-  background:none;
-  color:var(--muted);
+.clear {
+    margin-left: auto;
+    border: 0;
+    padding: 4px;
+    background: transparent;
+    color: var(--muted);
 }
 
 /* EMPTY */
 
-.empty{
-  min-height:300px;
-  display:grid;
-  place-items:center;
-  align-content:center;
-  text-align:center;
-  padding:40px;
+.empty {
+    min-height: 300px;
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+    padding: 40px;
 }
 
-.empty-icon{
-  margin-bottom:12px;
-  color:var(--accent);
-  font:bold 54px monospace;
+.empty-icon {
+    margin-bottom: 12px;
+    color: var(--accent);
+    font: 700 54px monospace;
 }
 
-.empty h2{
-  margin:0;
-  font-size:18px;
+.empty h2 {
+    margin: 0;
+    font-size: 18px;
 }
 
-.empty p{
-  max-width:380px;
-  margin:8px 0 20px;
-  color:var(--muted);
-  font-size:12px;
-  line-height:1.6;
+.empty p {
+    max-width: 380px;
+    margin: 8px 0 20px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
 }
 
 /* DASHBOARD */
 
-.hidden{
-  display:none!important;
+.hidden {
+    display: none !important;
 }
 
-.report-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  margin-bottom:12px;
+.report-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 12px;
 }
 
-.report-head h2{
-  margin:4px 0 0;
-  font-size:17px;
+.report-head h2 {
+    margin: 4px 0 0;
+    font-size: 17px;
 }
 
-.stats{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:10px;
+.stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
-.stat{
-  padding:15px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:var(--panel);
+.stat {
+    padding: 15px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--panel);
 }
 
-.stat span{
-  color:var(--muted);
-  font-size:9px;
-  font-weight:800;
-  letter-spacing:.15em;
+.stat span {
+    color: var(--muted);
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .15em;
 }
 
-.stat strong{
-  display:block;
-  margin:8px 0 2px;
-  font:700 28px monospace;
+.stat strong {
+    display: block;
+    margin: 8px 0 2px;
+    font: 700 28px monospace;
 }
 
-.stat small{
-  color:#566270;
-  font-size:9px;
+.stat small {
+    color: #566270;
+    font-size: 9px;
 }
 
-.stat.warning strong{
-  color:var(--warning);
+.stat.warning strong {
+    color: var(--warning);
 }
 
-.stat.danger strong{
-  color:var(--danger);
+.stat.danger strong {
+    color: var(--danger);
 }
 
-.two{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-  margin-bottom:10px;
+.two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
-.card-title{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:13px 15px;
-  border-bottom:1px solid var(--border);
+.card-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 13px 15px;
+    border-bottom: 1px solid var(--border);
 }
 
-.card-title h3{
-  margin:0;
-  font-size:10px;
-  letter-spacing:.14em;
+.card-title h3 {
+    margin: 0;
+    font-size: 10px;
+    letter-spacing: .14em;
 }
 
-.card-title span{
-  color:var(--muted);
-  font:10px monospace;
+.card-title span {
+    color: var(--muted);
+    font: 10px monospace;
 }
 
 /* COLORS */
 
-.colors{
-  padding:10px 15px;
+.colors {
+    padding: 10px 15px;
 }
 
-.color{
-  display:grid;
-  grid-template-columns:22px 1fr auto;
-  gap:9px;
-  align-items:center;
-  padding:6px 0;
-  font:11px monospace;
+.color-row {
+    display: grid;
+    grid-template-columns: 22px 1fr auto;
+    gap: 9px;
+    align-items: center;
+    padding: 6px 0;
+    font: 11px monospace;
 }
 
-.swatch{
-  width:20px;
-  height:20px;
-  border:1px solid rgba(255,255,255,.15);
-  border-radius:4px;
+.swatch {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 4px;
 }
 
-.color-info small{
-  display:block;
-  color:var(--muted);
-  font-size:9px;
-  margin-top:3px;
+.color-name small {
+    display: block;
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 9px;
 }
 
-.bar{
-  height:3px;
-  margin-top:4px;
-  background:#1a222c;
-  border-radius:5px;
-  overflow:hidden;
+.bar {
+    height: 3px;
+    margin-top: 4px;
+    overflow: hidden;
+    border-radius: 5px;
+    background: #1a222c;
 }
 
-.bar i{
-  display:block;
-  height:100%;
-  background:var(--accent);
+.bar i {
+    display: block;
+    height: 100%;
+    background: var(--accent);
 }
 
 /* FINDINGS */
 
-.findings{
-  padding:8px 13px;
+.findings {
+    padding: 8px 13px;
 }
 
-.finding{
-  display:grid;
-  grid-template-columns:23px 1fr;
-  gap:8px;
-  padding:10px 3px;
-  border-bottom:1px solid #151c24;
+.finding {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 8px;
+    padding: 10px 3px;
+    border-bottom: 1px solid #151c24;
 }
 
-.finding:last-child{
-  border:0;
+.finding:last-child {
+    border-bottom: 0;
 }
 
-.finding-icon{
-  color:var(--warning);
-  font-weight:bold;
+.finding-icon {
+    color: var(--warning);
+    font-weight: 900;
 }
 
-.finding.danger .finding-icon{
-  color:var(--danger);
+.finding.danger .finding-icon {
+    color: var(--danger);
 }
 
-.finding strong{
-  display:block;
-  font-size:11px;
+.finding strong {
+    display: block;
+    font-size: 11px;
 }
 
-.finding p{
-  margin:3px 0 0;
-  color:var(--muted);
-  font-size:10px;
-  line-height:1.5;
+.finding p {
+    margin: 3px 0 0;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.5;
 }
 
 /* TABLE */
 
-.table{
-  padding:0 15px;
+.table {
+    padding: 0 15px;
 }
 
-.row{
-  display:grid;
-  grid-template-columns:80px 1fr 75px;
-  gap:12px;
-  align-items:center;
-  padding:11px 3px;
-  border-bottom:1px solid #151c24;
-  font-size:10px;
+.table-row {
+    display: grid;
+    grid-template-columns: 75px 1fr 75px;
+    gap: 12px;
+    align-items: center;
+    padding: 11px 3px;
+    border-bottom: 1px solid #151c24;
+    font-size: 10px;
 }
 
-.row:last-child{
-  border:0;
+.table-row:last-child {
+    border-bottom: 0;
 }
 
-.severity{
-  font-size:8px;
-  font-weight:900;
-  letter-spacing:.1em;
+.severity {
+    font-size: 8px;
+    font-weight: 900;
+    letter-spacing: .1em;
 }
 
-.severity.high{
-  color:var(--danger);
+.severity.high {
+    color: var(--danger);
 }
 
-.severity.medium{
-  color:var(--warning);
+.severity.medium {
+    color: var(--warning);
 }
 
-.severity.info{
-  color:var(--blue);
+.severity.info {
+    color: var(--info);
 }
 
-.issue{
-  color:#c9d2dc;
+.issue {
+    color: #c9d2dc;
 }
 
-.line{
-  color:#566372;
-  text-align:right;
-  font-family:monospace;
+.issue-detail {
+    margin-top: 3px;
+    color: #566372;
+    font-size: 9px;
+}
+
+.line {
+    color: #566372;
+    text-align: right;
+    font-family: monospace;
 }
 
 /* CHART */
 
-.chart{
-  padding:15px;
+.chart {
+    padding: 15px;
 }
 
-.chart-row{
-  display:grid;
-  grid-template-columns:100px 1fr 35px;
-  gap:10px;
-  align-items:center;
-  margin-bottom:9px;
-  font:10px monospace;
+.chart-row {
+    display: grid;
+    grid-template-columns: 100px 1fr 35px;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 9px;
+    font: 10px monospace;
 }
 
-.chart-track{
-  height:7px;
-  border-radius:10px;
-  background:#17202a;
-  overflow:hidden;
+.chart-track {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 10px;
+    background: #17202a;
 }
 
-.chart-track i{
-  display:block;
-  height:100%;
-  background:var(--accent);
+.chart-track i {
+    display: block;
+    height: 100%;
+    background: var(--accent);
 }
 
 /* FOOTER */
 
-footer{
-  display:flex;
-  justify-content:space-between;
-  margin-top:20px;
-  padding-top:15px;
-  border-top:1px solid var(--border);
-  color:#4f5b68;
-  font:9px monospace;
+footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 15px;
+    border-top: 1px solid var(--border);
+    color: #4f5b68;
+    font: 9px monospace;
 }
 
 /* RESPONSIVE */
 
-@media(max-width:1050px){
-  .workspace{
-    grid-template-columns:1fr;
-  }
+@media (max-width: 1050px) {
+    .workspace {
+        grid-template-columns: 1fr;
+    }
 
-  .editor{
-    position:relative;
-    top:0;
-  }
+    .editor {
+        position: relative;
+        top: 0;
+    }
 
-  .editor-box{
-    height:430px;
-  }
+    .editor-box {
+        height: 430px;
+    }
 }
 
-@media(max-width:700px){
-  .app{
-    padding:14px;
-  }
+@media (max-width: 700px) {
+    .app {
+        padding: 14px;
+    }
 
-  header{
-    align-items:flex-start;
-    flex-direction:column;
-  }
+    header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
 
-  .actions{
-    width:100%;
-  }
+    .actions {
+        width: 100%;
+    }
 
-  .actions button{
-    flex:1;
-  }
+    .actions button {
+        flex: 1;
+    }
 
-  .stats{
-    grid-template-columns:1fr 1fr;
-  }
+    .stats {
+        grid-template-columns: 1fr 1fr;
+    }
 
-  .two{
-    grid-template-columns:1fr;
-  }
+    .two {
+        grid-template-columns: 1fr;
+    }
 
-  footer{
-    flex-direction:column;
-    gap:6px;
-  }
+    .table-row {
+        grid-template-columns: 65px 1fr;
+    }
+
+    .line {
+        display: none;
+    }
+
+    footer {
+        flex-direction: column;
+    }
 }
 </style>
 </head>
@@ -587,213 +617,285 @@ footer{
 <div class="app">
 
 <header>
-  <div class="brand">
-    <div class="logo">{ }</div>
 
-    <div>
-      <h1>CSS <span>FORENSICS</span></h1>
-      <div class="subtitle">
-        stylesheet intelligence toolkit
-      </div>
+    <div class="brand">
+
+        <div class="logo">{ }</div>
+
+        <div>
+            <h1>CSS <span>FORENSICS</span></h1>
+
+            <div class="subtitle">
+                stylesheet intelligence toolkit
+            </div>
+        </div>
+
     </div>
-  </div>
 
-  <div class="actions">
-    <button id="sample">LOAD SAMPLE</button>
-    <button class="primary" id="analyze">
-      ANALYZE CSS ↵
-    </button>
-  </div>
+    <div class="actions">
+
+        <button id="sampleButton">
+            LOAD SAMPLE
+        </button>
+
+        <button class="primary" id="analyzeButton">
+            ANALYZE CSS ↵
+        </button>
+
+    </div>
+
 </header>
 
 
 <div class="workspace">
 
-<!-- EDITOR -->
+    <!-- EDITOR -->
 
-<section class="panel editor">
+    <section class="panel editor">
 
-  <div class="panel-head">
+        <div class="panel-head">
 
-    <div>
-      <div class="label">INPUT</div>
-      <div class="panel-title">Stylesheet</div>
-    </div>
+            <div>
+                <div class="label">INPUT</div>
+                <div class="panel-title">Stylesheet</div>
+            </div>
 
-    <div class="meta">
-      <span id="linesCount">0</span> lines ·
-      <span id="charsCount">0</span> chars
-    </div>
+            <div class="meta">
+                <span id="lineCount">0</span> lines ·
+                <span id="charCount">0</span> chars
+            </div>
 
-  </div>
-
-
-  <div class="editor-box">
-
-    <div id="lineNumbers" class="lines">1</div>
-
-    <textarea
-      id="css"
-      spellcheck="false"
-      placeholder="/* Paste your CSS here */"
-    ></textarea>
-
-  </div>
-
-
-  <div class="panel-foot">
-
-    <span class="dot"></span>
-
-    <span id="status">
-      READY FOR ANALYSIS
-    </span>
-
-    <button class="clear" id="clear">
-      CLEAR
-    </button>
-
-  </div>
-
-</section>
-
-
-<!-- RESULTS -->
-
-<section>
-
-  <div id="empty" class="panel empty">
-
-    <div class="empty-icon">⌁</div>
-
-    <h2>Awaiting stylesheet</h2>
-
-    <p>
-      Paste CSS into the forensic console,
-      then run an analysis.
-    </p>
-
-    <button class="primary" id="emptySample">
-      LOAD SAMPLE DATA
-    </button>
-
-  </div>
-
-
-  <div id="dashboard" class="hidden">
-
-    <div class="report-head">
-
-      <div>
-        <div class="label">REPORT</div>
-        <h2>Forensic results</h2>
-      </div>
-
-      <button id="export">
-        EXPORT JSON
-      </button>
-
-    </div>
-
-
-    <!-- STATS -->
-
-    <div class="stats">
-
-      <div class="stat">
-        <span>SELECTORS</span>
-        <strong id="selectors">0</strong>
-        <small>rules scanned</small>
-      </div>
-
-      <div class="stat">
-        <span>DECLARATIONS</span>
-        <strong id="declarations">0</strong>
-        <small>properties found</small>
-      </div>
-
-      <div class="stat warning">
-        <span>!IMPORTANT</span>
-        <strong id="important">0</strong>
-        <small>priority overrides</small>
-      </div>
-
-      <div class="stat danger">
-        <span>DUPLICATES</span>
-        <strong id="duplicates">0</strong>
-        <small>repeated declarations</small>
-      </div>
-
-    </div>
-
-
-    <!-- COLORS / RISKS -->
-
-    <div class="two">
-
-      <section class="panel">
-
-        <div class="card-title">
-          <h3>COLOR SYSTEM</h3>
-          <span id="colorCount">0 colors</span>
         </div>
 
-        <div id="colors" class="colors"></div>
 
-      </section>
+        <div class="editor-box">
 
+            <div id="lineNumbers" class="line-numbers">1</div>
 
-      <section class="panel">
+            <textarea
+                id="cssInput"
+                spellcheck="false"
+                placeholder="/* Paste your CSS here */"
+            ></textarea>
 
-        <div class="card-title">
-          <h3>RISK SIGNALS</h3>
-          <span id="riskCount">0 flags</span>
         </div>
 
-        <div id="risks" class="findings"></div>
 
-      </section>
+        <div class="panel-foot">
 
-    </div>
+            <span class="status-dot"></span>
 
+            <span id="statusText">
+                READY FOR ANALYSIS
+            </span>
 
-    <!-- FINDINGS -->
+            <button class="clear" id="clearButton">
+                CLEAR
+            </button>
 
-    <section class="panel" style="margin-bottom:10px">
-
-      <div class="card-title">
-        <h3>FINDINGS</h3>
-        <span id="findingCount">0</span>
-      </div>
-
-      <div id="findingTable" class="table"></div>
+        </div>
 
     </section>
 
 
-    <!-- PROPERTY FREQUENCY -->
+    <!-- RESULTS -->
 
-    <section class="panel">
+    <section>
 
-      <div class="card-title">
-        <h3>PROPERTY FREQUENCY</h3>
-        <span>TOP 12</span>
-      </div>
+        <div id="emptyState" class="panel empty">
 
-      <div id="chart" class="chart"></div>
+            <div class="empty-icon">⌁</div>
+
+            <h2>Awaiting stylesheet</h2>
+
+            <p>
+                Paste CSS into the forensic console,
+                then run an analysis.
+            </p>
+
+            <button class="primary" id="emptySampleButton">
+                LOAD SAMPLE DATA
+            </button>
+
+        </div>
+
+
+        <div id="dashboard" class="hidden">
+
+            <div class="report-head">
+
+                <div>
+                    <div class="label">REPORT</div>
+                    <h2>Forensic results</h2>
+                </div>
+
+                <button id="exportButton">
+                    EXPORT JSON
+                </button>
+
+            </div>
+
+
+            <!-- STATS -->
+
+            <div class="stats">
+
+                <div class="stat">
+
+                    <span>SELECTORS</span>
+
+                    <strong id="selectorStat">
+                        0
+                    </strong>
+
+                    <small>
+                        rules scanned
+                    </small>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <span>DECLARATIONS</span>
+
+                    <strong id="declarationStat">
+                        0
+                    </strong>
+
+                    <small>
+                        properties found
+                    </small>
+
+                </div>
+
+
+                <div class="stat warning">
+
+                    <span>!IMPORTANT</span>
+
+                    <strong id="importantStat">
+                        0
+                    </strong>
+
+                    <small>
+                        priority overrides
+                    </small>
+
+                </div>
+
+
+                <div class="stat danger">
+
+                    <span>DUPLICATES</span>
+
+                    <strong id="duplicateStat">
+                        0
+                    </strong>
+
+                    <small>
+                        repeated declarations
+                    </small>
+
+                </div>
+
+            </div>
+
+
+            <!-- COLORS / RISKS -->
+
+            <div class="two">
+
+                <section class="panel">
+
+                    <div class="card-title">
+
+                        <h3>COLOR SYSTEM</h3>
+
+                        <span id="colorCount">
+                            0 colors
+                        </span>
+
+                    </div>
+
+                    <div id="colors" class="colors"></div>
+
+                </section>
+
+
+                <section class="panel">
+
+                    <div class="card-title">
+
+                        <h3>RISK SIGNALS</h3>
+
+                        <span id="riskCount">
+                            0 flags
+                        </span>
+
+                    </div>
+
+                    <div id="risks" class="findings"></div>
+
+                </section>
+
+            </div>
+
+
+            <!-- FINDINGS -->
+
+            <section class="panel" style="margin-bottom:10px">
+
+                <div class="card-title">
+
+                    <h3>FINDINGS</h3>
+
+                    <span id="findingCount">
+                        0
+                    </span>
+
+                </div>
+
+                <div id="findingTable" class="table"></div>
+
+            </section>
+
+
+            <!-- PROPERTY FREQUENCY -->
+
+            <section class="panel">
+
+                <div class="card-title">
+
+                    <h3>PROPERTY FREQUENCY</h3>
+
+                    <span>
+                        TOP 12
+                    </span>
+
+                </div>
+
+                <div id="propertyChart" class="chart"></div>
+
+            </section>
+
+        </div>
 
     </section>
-
-  </div>
-
-</section>
 
 </div>
 
 
 <footer>
-  <span>CSS FORENSICS v1.0</span>
-  <span>100% CLIENT-SIDE · YOUR CSS NEVER LEAVES THIS BROWSER</span>
+
+    <span>
+        CSS FORENSICS v1.0
+    </span>
+
+    <span>
+        100% CLIENT-SIDE · YOUR CSS NEVER LEAVES THIS BROWSER
+    </span>
+
 </footer>
 
 </div>
@@ -801,748 +903,1296 @@ footer{
 
 <script>
 
-const cssInput = document.getElementById("css");
+/* =========================================================
+   CSS FORENSICS
+   Pure Vanilla JavaScript
+   ========================================================= */
+
+
+/* ---------------------------------------------------------
+   DOM
+   --------------------------------------------------------- */
+
+const cssInput = document.getElementById("cssInput");
 const lineNumbers = document.getElementById("lineNumbers");
 
-const sampleCSS = `
+const sampleButton = document.getElementById("sampleButton");
+const emptySampleButton = document.getElementById("emptySampleButton");
+
+const analyzeButton = document.getElementById("analyzeButton");
+const clearButton = document.getElementById("clearButton");
+const exportButton = document.getElementById("exportButton");
+
+const emptyState = document.getElementById("emptyState");
+const dashboard = document.getElementById("dashboard");
+
+const statusText = document.getElementById("statusText");
+
+
+/* ---------------------------------------------------------
+   SAMPLE CSS
+   --------------------------------------------------------- */
+
+const SAMPLE_CSS = `/* CSS FORENSICS TEST CASE */
+
 :root {
-  --primary: #6c5ce7;
-  --secondary: #00cec9;
-  --danger: #ff4757;
+    --primary: #6c5ce7;
+    --accent: #00cec9;
+    --danger: #ff4757;
 }
 
 body {
-  margin: 0;
-  background: #111111;
-  color: #ffffff;
-  font-family: Arial;
-  z-index: 9999;
+    margin: 0;
+    padding: 0;
+    background: #111111;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    z-index: 9999;
 }
 
 .card {
-  color: #ffffff;
-  padding: 20px;
-  padding: 20px;
-  background: #111111 !important;
+    color: #ffffff;
+    padding: 20px;
+    padding: 20px;
+    background: #111111 !important;
 }
 
 .card:hover {
-  background: #111111 !important;
+    background: #111111 !important;
 }
 
 .button {
-  color: #ffffff !important;
-  background: #6c5ce7;
-  z-index: 99999;
+    color: #ffffff !important;
+    background: #6c5ce7;
+    z-index: 99999;
+}
+
+.button.large {
+    padding: 20px;
+    margin: 20px;
 }
 
 .old-selector {
-  color: red;
+    color: red;
+    background: blue;
 }
 
 .container {
-  padding: 20px;
-  margin: 20px;
-  border: 1px solid #ffffff;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ffffff;
+}`;
+
+
+/* ---------------------------------------------------------
+   EDITOR
+   --------------------------------------------------------- */
+
+function updateEditorInfo() {
+
+    const value = cssInput.value;
+
+    const lines = value.length
+        ? value.split("\n").length
+        : 0;
+
+    document.getElementById("lineCount").textContent = lines;
+    document.getElementById("charCount").textContent = value.length;
+
+    const totalLines = Math.max(lines, 1);
+
+    let numbers = "";
+
+    for (let i = 1; i <= totalLines; i++) {
+        numbers += i;
+
+        if (i < totalLines) {
+            numbers += "\n";
+        }
+    }
+
+    lineNumbers.textContent = numbers;
 }
-`.trim();
 
 
-function updateEditor(){
-
-  const value = cssInput.value;
-
-  const lines = value
-    ? value.split("\\n").length
-    : 0;
-
-  document.getElementById("linesCount").textContent = lines;
-  document.getElementById("charsCount").textContent = value.length;
-
-  let numbers = "";
-
-  for(let i=1;i<=Math.max(lines,1);i++){
-    numbers += i + "\\n";
-  }
-
-  lineNumbers.textContent = numbers;
-
-}
+cssInput.addEventListener("input", updateEditorInfo);
 
 
-cssInput.addEventListener("input",updateEditor);
-
-cssInput.addEventListener("scroll",()=>{
-  lineNumbers.scrollTop = cssInput.scrollTop;
+cssInput.addEventListener("scroll", () => {
+    lineNumbers.scrollTop = cssInput.scrollTop;
 });
 
 
-document.getElementById("clear").onclick=()=>{
+/* ---------------------------------------------------------
+   SAMPLE
+   --------------------------------------------------------- */
 
-  cssInput.value="";
+function loadSample() {
 
-  updateEditor();
+    cssInput.value = SAMPLE_CSS;
 
-  document.getElementById("dashboard").classList.add("hidden");
-  document.getElementById("empty").classList.remove("hidden");
+    updateEditorInfo();
 
-};
+    statusText.textContent = "SAMPLE LOADED";
+
+    cssInput.focus();
+}
 
 
-function parseCSS(source){
+sampleButton.addEventListener("click", loadSample);
+emptySampleButton.addEventListener("click", loadSample);
 
-  const clean = source
-    .replace(/\\/\\*[\\s\\S]*?\\*\\//g,"");
 
-  const rules = [];
+/* ---------------------------------------------------------
+   CLEAR
+   --------------------------------------------------------- */
 
-  const ruleRegex = /([^{}]+)\\{([^{}]*)\\}/g;
+clearButton.addEventListener("click", () => {
 
-  let match;
+    cssInput.value = "";
 
-  while((match=ruleRegex.exec(clean))){
+    updateEditorInfo();
 
-    const selector = match[1].trim();
+    emptyState.classList.remove("hidden");
+    dashboard.classList.add("hidden");
 
-    if(selector.startsWith("@"))
-      continue;
+    statusText.textContent = "READY FOR ANALYSIS";
 
-    const body = match[2];
+});
+
+
+/* ---------------------------------------------------------
+   COMMENT REMOVAL
+   --------------------------------------------------------- */
+
+function removeComments(css) {
+
+    return css.replace(/\/\*[\s\S]*?\*\//g, "");
+}
+
+
+/* ---------------------------------------------------------
+   CSS PARSER
+   --------------------------------------------------------- */
+
+function parseCSS(css) {
+
+    const source = removeComments(css);
+
+    const rules = [];
+
+    let depth = 0;
+    let start = -1;
+
+    let quote = null;
+
+    for (let i = 0; i < source.length; i++) {
+
+        const char = source[i];
+
+        if (quote) {
+
+            if (char === "\\" && i + 1 < source.length) {
+                i++;
+                continue;
+            }
+
+            if (char === quote) {
+                quote = null;
+            }
+
+            continue;
+        }
+
+        if (char === '"' || char === "'") {
+            quote = char;
+            continue;
+        }
+
+
+        if (char === "{") {
+
+            if (depth === 0) {
+                start = i;
+            }
+
+            depth++;
+            continue;
+        }
+
+
+        if (char === "}") {
+
+            depth--;
+
+            if (depth === 0 && start !== -1) {
+
+                const header =
+                    source.slice(0, start).split("\n").pop().trim();
+
+                const blockStart = start;
+
+                const body =
+                    source.slice(
+                        source.lastIndexOf("{", i),
+                        i
+                    ).slice(1);
+
+
+                let headerStart = start - 1;
+
+                while (
+                    headerStart >= 0 &&
+                    source[headerStart] !== "}"
+                ) {
+                    headerStart--;
+                }
+
+                const selector =
+                    source
+                        .slice(headerStart + 1, start)
+                        .trim();
+
+
+                if (
+                    selector &&
+                    !selector.startsWith("@")
+                ) {
+
+                    rules.push({
+                        selector,
+                        body,
+                        line:
+                            source
+                                .slice(0, start)
+                                .split("\n")
+                                .length
+                    });
+
+                }
+
+                start = -1;
+            }
+        }
+    }
+
+    return rules;
+}
+
+
+/* ---------------------------------------------------------
+   DECLARATION PARSER
+   --------------------------------------------------------- */
+
+function parseDeclarations(body) {
 
     const declarations = [];
 
-    body.split(";").forEach(part=>{
+    let current = "";
+    let quote = null;
+    let parentheses = 0;
 
-      const index = part.indexOf(":");
+    function pushDeclaration(text) {
 
-      if(index === -1) return;
+        const index = text.indexOf(":");
 
-      const property =
-        part.slice(0,index).trim().toLowerCase();
+        if (index === -1) {
+            return;
+        }
 
-      const value =
-        part.slice(index+1).trim();
+        const property =
+            text.slice(0, index).trim().toLowerCase();
 
-      if(property && value){
+        const value =
+            text.slice(index + 1).trim();
+
+        if (!property || !value) {
+            return;
+        }
 
         declarations.push({
-          property,
-          value
+            property,
+            value
         });
-
-      }
-
-    });
-
-    rules.push({
-      selector,
-      declarations,
-      start: clean.slice(0,match.index).split("\\n").length
-    });
-
-  }
-
-  return rules;
-}
-
-
-function analyzeCSS(){
-
-  const source = cssInput.value.trim();
-
-  if(!source){
-
-    alert("Paste some CSS first.");
-
-    return;
-  }
-
-
-  const rules = parseCSS(source);
-
-  let declarationCount = 0;
-  let importantCount = 0;
-
-  const properties = {};
-  const colors = {};
-  const duplicateMap = {};
-
-  const findings = [];
-
-
-  rules.forEach(rule=>{
-
-    rule.declarations.forEach((decl,index)=>{
-
-      declarationCount++;
-
-      const property = decl.property;
-      const value = decl.value;
-
-      properties[property] =
-        (properties[property] || 0) + 1;
-
-
-      if(/!important/i.test(value)){
-
-        importantCount++;
-
-        findings.push({
-          type:"MEDIUM",
-          issue:`!important used on ${property}`,
-          line:rule.start,
-          message:"Priority override detected."
-        });
-
-      }
-
-
-      const key =
-        property + ":" +
-        value.replace(/!important/gi,"").trim();
-
-      duplicateMap[key] =
-        (duplicateMap[key] || 0) + 1;
-
-
-      /*
-       COLOR DETECTION
-      */
-
-      const detectedColors =
-        value.match(
-          /#[0-9a-fA-F]{3,8}\\b|rgba?\\([^)]*\\)|hsla?\\([^)]*\\)|\\b(?:red|blue|green|black|white|yellow|orange|purple|gray|grey)\\b/gi
-        );
-
-      if(detectedColors){
-
-        detectedColors.forEach(color=>{
-
-          const normalized =
-            color.toLowerCase();
-
-          colors[normalized] =
-            (colors[normalized] || 0) + 1;
-
-        });
-
-      }
-
-
-      /*
-       Z-INDEX
-      */
-
-      if(property==="z-index"){
-
-        const num =
-          parseInt(value,10);
-
-        if(!isNaN(num) && num >= 1000){
-
-          findings.push({
-            type:"MEDIUM",
-            issue:`High z-index: ${num}`,
-            line:rule.start,
-            message:"Extremely high stacking value."
-          });
-
-        }
-
-      }
-
-
-      /*
-       DUPLICATE DECLARATION
-      */
-
-      if(index > 0){
-
-        const previous =
-          rule.declarations[index-1];
-
-        if(
-          previous.property === property &&
-          previous.value === value
-        ){
-
-          findings.push({
-            type:"HIGH",
-            issue:`Duplicate ${property}: ${value}`,
-            line:rule.start,
-            message:"Same declaration appears repeatedly."
-          });
-
-        }
-
-      }
-
-    });
-
-  });
-
-
-  /*
-   GLOBAL DUPLICATES
-  */
-
-  Object.entries(duplicateMap).forEach(([key,count])=>{
-
-    if(count > 1){
-
-      const [property,value] =
-        key.split(":");
-
-      if(!findings.some(
-        x=>x.issue.includes(`Duplicate ${property}`)
-      )){
-
-        findings.push({
-          type:"HIGH",
-          issue:`Repeated ${property}: ${value}`,
-          line:"—",
-          message:`Declaration appears ${count} times.`
-        });
-
-      }
-
     }
 
-  });
+
+    for (let i = 0; i < body.length; i++) {
+
+        const char = body[i];
+
+        if (quote) {
+
+            current += char;
+
+            if (char === "\\" && i + 1 < body.length) {
+                current += body[++i];
+                continue;
+            }
+
+            if (char === quote) {
+                quote = null;
+            }
+
+            continue;
+        }
 
 
-  /*
-   !important risk
-  */
+        if (char === '"' || char === "'") {
 
-  if(importantCount >= 5){
+            quote = char;
+            current += char;
+            continue;
+        }
 
-    findings.push({
-      type:"HIGH",
-      issue:"Heavy !important usage",
-      line:"—",
-      message:`${importantCount} priority overrides detected.`
+
+        if (char === "(") {
+            parentheses++;
+            current += char;
+            continue;
+        }
+
+
+        if (char === ")") {
+            parentheses = Math.max(0, parentheses - 1);
+            current += char;
+            continue;
+        }
+
+
+        if (char === ";" && parentheses === 0) {
+
+            pushDeclaration(current);
+            current = "";
+
+            continue;
+        }
+
+
+        current += char;
+    }
+
+
+    if (current.trim()) {
+        pushDeclaration(current);
+    }
+
+
+    return declarations;
+}
+
+
+/* ---------------------------------------------------------
+   COLOR DETECTION
+   --------------------------------------------------------- */
+
+function extractColors(value) {
+
+    const matches = value.match(
+        /#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)|hsla?\([^)]*\)|\b(?:red|blue|green|black|white|yellow|orange|purple|gray|grey|transparent)\b/gi
+    );
+
+    return matches || [];
+}
+
+
+/* ---------------------------------------------------------
+   SPECIFICITY
+   --------------------------------------------------------- */
+
+function calculateSpecificity(selector) {
+
+    const ids =
+        (selector.match(/#[\w-]+/g) || []).length;
+
+    const classes =
+        (
+            selector.match(
+                /\.[\w-]+|\[[^\]]+\]|:[^:\s(]+(?:\([^)]*\))?/g
+            ) || []
+        ).length;
+
+    const elements =
+        (
+            selector
+                .replace(/#[\w-]+/g, "")
+                .replace(/\.[\w-]+/g, "")
+                .replace(/\[[^\]]+\]/g, "")
+                .replace(/:[^:\s(]+(?:\([^)]*\))?/g, "")
+                .match(
+                    /\b[a-zA-Z][\w-]*\b/g
+                ) || []
+        ).filter(
+            item =>
+                ![
+                    "and",
+                    "or",
+                    "not",
+                    "where",
+                    "is"
+                ].includes(item)
+        ).length;
+
+    return {
+        ids,
+        classes,
+        elements,
+        score: ids * 100 + classes * 10 + elements
+    };
+}
+
+
+/* ---------------------------------------------------------
+   ANALYSIS
+   --------------------------------------------------------- */
+
+function analyzeCSS() {
+
+    const source = cssInput.value.trim();
+
+    if (!source) {
+
+        statusText.textContent = "NO CSS PROVIDED";
+
+        emptyState.classList.remove("hidden");
+        dashboard.classList.add("hidden");
+
+        return null;
+    }
+
+
+    statusText.textContent = "ANALYZING...";
+
+
+    try {
+
+        const rules = parseCSS(source);
+
+        let declarationCount = 0;
+        let importantCount = 0;
+
+        const properties = {};
+        const colors = {};
+
+        const declarationOccurrences = {};
+
+        const findings = [];
+
+
+        /*
+         * RULE ANALYSIS
+         */
+
+        rules.forEach(rule => {
+
+            const declarations =
+                parseDeclarations(rule.body);
+
+            rule.declarations = declarations;
+
+            declarationCount += declarations.length;
+
+
+            /*
+             * Selector specificity
+             */
+
+            const specificity =
+                calculateSpecificity(rule.selector);
+
+            if (specificity.score >= 100) {
+
+                findings.push({
+                    type: "MEDIUM",
+                    issue:
+                        `High specificity: ${rule.selector}`,
+                    line: rule.line,
+                    message:
+                        `Specificity score ${specificity.score}.`
+                });
+
+            }
+
+
+            /*
+             * Deep selector
+             */
+
+            const depth =
+                rule.selector
+                    .split(/\s+|>/)
+                    .filter(Boolean)
+                    .length;
+
+            if (depth >= 5) {
+
+                findings.push({
+                    type: "MEDIUM",
+                    issue:
+                        `Deep selector: ${rule.selector}`,
+                    line: rule.line,
+                    message:
+                        `${depth} selector levels detected.`
+                });
+
+            }
+
+
+            /*
+             * Declaration analysis
+             */
+
+            declarations.forEach((decl, index) => {
+
+                const property = decl.property;
+                const value = decl.value;
+
+                properties[property] =
+                    (properties[property] || 0) + 1;
+
+
+                /*
+                 * IMPORTANT
+                 */
+
+                if (/!important\b/i.test(value)) {
+
+                    importantCount++;
+
+                    findings.push({
+                        type: "MEDIUM",
+                        issue:
+                            `!important used on ${property}`,
+                        line: rule.line,
+                        message:
+                            "Priority override detected."
+                    });
+
+                }
+
+
+                /*
+                 * COLORS
+                 */
+
+                extractColors(value).forEach(color => {
+
+                    const normalized =
+                        color.toLowerCase();
+
+                    colors[normalized] =
+                        (colors[normalized] || 0) + 1;
+
+                });
+
+
+                /*
+                 * DUPLICATES INSIDE SAME RULE
+                 */
+
+                const cleanValue =
+                    value
+                        .replace(/!important\b/gi, "")
+                        .trim();
+
+                const key =
+                    property + "::" + cleanValue;
+
+
+                declarationOccurrences[key] =
+                    declarationOccurrences[key] || [];
+
+                declarationOccurrences[key].push({
+                    line: rule.line,
+                    selector: rule.selector
+                });
+
+
+                /*
+                 * ADJACENT DUPLICATE
+                 */
+
+                if (index > 0) {
+
+                    const previous =
+                        declarations[index - 1];
+
+                    if (
+                        previous.property === property &&
+                        previous.value === value
+                    ) {
+
+                        findings.push({
+                            type: "HIGH",
+                            issue:
+                                `Duplicate ${property}: ${value}`,
+                            line: rule.line,
+                            message:
+                                "Same declaration appears twice in one rule."
+                        });
+
+                    }
+
+                }
+
+
+                /*
+                 * HIGH Z-INDEX
+                 */
+
+                if (property === "z-index") {
+
+                    const number =
+                        parseInt(value, 10);
+
+                    if (
+                        Number.isFinite(number) &&
+                        number >= 1000
+                    ) {
+
+                        findings.push({
+                            type: "MEDIUM",
+                            issue:
+                                `High z-index: ${number}`,
+                            line: rule.line,
+                            message:
+                                "Extremely high stacking value."
+                        });
+
+                    }
+
+                }
+
+            });
+
+        });
+
+
+        /*
+         * REPEATED DECLARATIONS
+         */
+
+        Object.entries(declarationOccurrences)
+            .forEach(([key, occurrences]) => {
+
+                if (occurrences.length < 2) {
+                    return;
+                }
+
+                const [property, value] =
+                    key.split("::");
+
+                const sameRule =
+                    new Set(
+                        occurrences.map(
+                            item => item.selector
+                        )
+                    ).size === 1;
+
+
+                if (!sameRule) {
+
+                    findings.push({
+                        type: "HIGH",
+                        issue:
+                            `Repeated ${property}: ${value}`,
+                        line:
+                            occurrences[0].line,
+                        message:
+                            `${occurrences.length} occurrences detected.`
+                    });
+
+                }
+
+            });
+
+
+        /*
+         * HEAVY IMPORTANT
+         */
+
+        if (importantCount >= 5) {
+
+            findings.push({
+                type: "HIGH",
+                issue: "Heavy !important usage",
+                line: "GLOBAL",
+                message:
+                    `${importantCount} priority overrides detected.`
+            });
+
+        }
+
+
+        /*
+         * LARGE COLOR SYSTEM
+         */
+
+        const uniqueColors =
+            Object.keys(colors).length;
+
+        if (uniqueColors >= 8) {
+
+            findings.push({
+                type: "INFO",
+                issue: "Large color system",
+                line: "GLOBAL",
+                message:
+                    `${uniqueColors} unique colors detected.`
+            });
+
+        }
+
+
+        /*
+         * SORT FINDINGS
+         */
+
+        const severityOrder = {
+            HIGH: 0,
+            MEDIUM: 1,
+            INFO: 2
+        };
+
+        findings.sort(
+            (a, b) =>
+                severityOrder[a.type] -
+                severityOrder[b.type]
+        );
+
+
+        /*
+         * SHOW DASHBOARD
+         */
+
+        emptyState.classList.add("hidden");
+        dashboard.classList.remove("hidden");
+
+
+        /*
+         * STATS
+         */
+
+        document.getElementById("selectorStat")
+            .textContent = rules.length;
+
+        document.getElementById("declarationStat")
+            .textContent = declarationCount;
+
+        document.getElementById("importantStat")
+            .textContent = importantCount;
+
+        document.getElementById("duplicateStat")
+            .textContent =
+                findings.filter(
+                    item => item.type === "HIGH"
+                ).length;
+
+
+        /*
+         * RENDER
+         */
+
+        renderColors(colors);
+        renderRisks(findings);
+        renderFindings(findings);
+        renderPropertyChart(properties);
+
+
+        statusText.textContent =
+            "ANALYSIS COMPLETE";
+
+
+        return {
+            version: "1.0",
+            analyzedAt: new Date().toISOString(),
+            selectors: rules.length,
+            declarations: declarationCount,
+            important: importantCount,
+            uniqueColors,
+            properties,
+            colors,
+            findings
+        };
+
+    } catch (error) {
+
+        console.error(error);
+
+        statusText.textContent =
+            "ANALYSIS ERROR";
+
+        alert(
+            "CSS analysis failed.\n\n" +
+            error.message
+        );
+
+        return null;
+    }
+}
+
+
+/* ---------------------------------------------------------
+   COLORS UI
+   --------------------------------------------------------- */
+
+function renderColors(colors) {
+
+    const container =
+        document.getElementById("colors");
+
+    container.innerHTML = "";
+
+
+    const entries =
+        Object.entries(colors)
+            .sort((a,b) => b[1] - a[1])
+            .slice(0, 8);
+
+
+    document.getElementById("colorCount")
+        .textContent =
+            Object.keys(colors).length + " colors";
+
+
+    if (!entries.length) {
+
+        container.innerHTML =
+            `<div style="padding:15px;color:#748191;font-size:11px">
+                No colors detected.
+            </div>`;
+
+        return;
+    }
+
+
+    const max =
+        entries[0][1];
+
+
+    entries.forEach(([color, count]) => {
+
+        const row =
+            document.createElement("div");
+
+        row.className = "color-row";
+
+
+        const swatch =
+            document.createElement("div");
+
+        swatch.className = "swatch";
+
+        /*
+         * CSS.escape isn't necessary here because
+         * the value is inserted through style.background.
+         */
+
+        swatch.style.background = color;
+
+
+        const info =
+            document.createElement("div");
+
+        info.className = "color-name";
+
+        const name =
+            document.createElement("div");
+
+        name.textContent = color;
+
+
+        const small =
+            document.createElement("small");
+
+        small.textContent =
+            `${count} occurrence${count === 1 ? "" : "s"}`;
+
+
+        const bar =
+            document.createElement("div");
+
+        bar.className = "bar";
+
+
+        const fill =
+            document.createElement("i");
+
+        fill.style.width =
+            `${(count / max) * 100}%`;
+
+
+        bar.appendChild(fill);
+
+        info.appendChild(name);
+        info.appendChild(small);
+        info.appendChild(bar);
+
+
+        const total =
+            document.createElement("strong");
+
+        total.textContent = count;
+
+
+        row.appendChild(swatch);
+        row.appendChild(info);
+        row.appendChild(total);
+
+        container.appendChild(row);
+
     });
+}
 
-  }
+
+/* ---------------------------------------------------------
+   RISK UI
+   --------------------------------------------------------- */
+
+function renderRisks(findings) {
+
+    const container =
+        document.getElementById("risks");
+
+    container.innerHTML = "";
 
 
-  /*
-   COLOR COUNT
-  */
+    const risks =
+        findings
+            .filter(item => item.type !== "INFO")
+            .slice(0, 6);
 
-  if(Object.keys(colors).length >= 8){
 
-    findings.push({
-      type:"INFO",
-      issue:"Large color system",
-      line:"—",
-      message:`${Object.keys(colors).length} unique colors detected.`
+    document.getElementById("riskCount")
+        .textContent =
+            risks.length + " flags";
+
+
+    if (!risks.length) {
+
+        container.innerHTML = `
+            <div class="finding">
+
+                <div class="finding-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <strong>
+                        No major risks detected
+                    </strong>
+
+                    <p>
+                        The stylesheet looks clean.
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+        return;
+    }
+
+
+    risks.forEach(item => {
+
+        const finding =
+            document.createElement("div");
+
+        finding.className =
+            "finding " +
+            (item.type === "HIGH" ? "danger" : "");
+
+
+        finding.innerHTML = `
+            <div class="finding-icon">
+                !
+            </div>
+
+            <div>
+
+                <strong></strong>
+
+                <p></p>
+
+            </div>
+        `;
+
+
+        finding.querySelector("strong")
+            .textContent = item.issue;
+
+        finding.querySelector("p")
+            .textContent = item.message;
+
+
+        container.appendChild(finding);
+
     });
-
-  }
-
-
-  /*
-   EMPTY STATE
-  */
-
-  document.getElementById("empty")
-    .classList.add("hidden");
-
-  document.getElementById("dashboard")
-    .classList.remove("hidden");
-
-
-  /*
-   STATS
-  */
-
-  document.getElementById("selectors")
-    .textContent=rules.length;
-
-  document.getElementById("declarations")
-    .textContent=declarationCount;
-
-  document.getElementById("important")
-    .textContent=importantCount;
-
-  document.getElementById("duplicates")
-    .textContent=
-      findings.filter(x=>x.type==="HIGH").length;
-
-
-  renderColors(colors);
-  renderRisks(findings);
-  renderFindings(findings);
-  renderChart(properties);
-
-
-  document.getElementById("status")
-    .textContent="ANALYSIS COMPLETE";
-
-
-  return {
-    selectors:rules.length,
-    declarations:declarationCount,
-    important:importantCount,
-    colors,
-    properties,
-    findings
-  };
-
 }
 
 
-function renderColors(colors){
+/* ---------------------------------------------------------
+   FINDINGS TABLE
+   --------------------------------------------------------- */
 
-  const container =
-    document.getElementById("colors");
+function renderFindings(findings) {
 
-  container.innerHTML="";
+    const container =
+        document.getElementById("findingTable");
 
-  const entries =
-    Object.entries(colors)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,8);
-
-  document.getElementById("colorCount")
-    .textContent =
-      Object.keys(colors).length + " colors";
+    container.innerHTML = "";
 
 
-  if(!entries.length){
-
-    container.innerHTML =
-      '<div style="padding:15px;color:#778494;font-size:11px">No colors detected.</div>';
-
-    return;
-  }
+    document.getElementById("findingCount")
+        .textContent = findings.length;
 
 
-  const max =
-    entries[0][1];
+    if (!findings.length) {
+
+        container.innerHTML = `
+            <div style="padding:18px;color:#748191;font-size:11px">
+                ✓ No findings. Your stylesheet passed the forensic scan.
+            </div>
+        `;
+
+        return;
+    }
 
 
-  entries.forEach(([color,count])=>{
+    findings.forEach(item => {
 
-    const row =
-      document.createElement("div");
+        const row =
+            document.createElement("div");
 
-    row.className="color";
+        row.className = "table-row";
 
-    row.innerHTML=`
 
-      <div
-        class="swatch"
-        style="background:${color}"
-      ></div>
+        const severity =
+            document.createElement("div");
 
-      <div class="color-info">
+        severity.className =
+            "severity " +
+            (
+                item.type === "HIGH"
+                    ? "high"
+                    : item.type === "MEDIUM"
+                        ? "medium"
+                        : "info"
+            );
 
-        <div>${escapeHTML(color)}</div>
+        severity.textContent = item.type;
 
-        <small>${count} occurrence${count>1?"s":""}</small>
 
-        <div class="bar">
-          <i style="width:${count/max*100}%"></i>
-        </div>
+        const issue =
+            document.createElement("div");
 
-      </div>
+        issue.className = "issue";
 
-      <strong>${count}</strong>
-    `;
 
-    container.appendChild(row);
+        const title =
+            document.createElement("div");
 
-  });
+        title.textContent = item.issue;
 
+
+        const detail =
+            document.createElement("div");
+
+        detail.className = "issue-detail";
+
+        detail.textContent = item.message;
+
+
+        issue.appendChild(title);
+        issue.appendChild(detail);
+
+
+        const line =
+            document.createElement("div");
+
+        line.className = "line";
+
+        line.textContent =
+            item.line === "GLOBAL"
+                ? "GLOBAL"
+                : "LINE " + item.line;
+
+
+        row.appendChild(severity);
+        row.appendChild(issue);
+        row.appendChild(line);
+
+
+        container.appendChild(row);
+
+    });
 }
 
 
-function renderRisks(findings){
+/* ---------------------------------------------------------
+   PROPERTY CHART
+   --------------------------------------------------------- */
 
-  const container =
-    document.getElementById("risks");
+function renderPropertyChart(properties) {
 
-  container.innerHTML="";
+    const container =
+        document.getElementById("propertyChart");
 
-  const risks =
-    findings
-      .filter(x=>x.type!=="INFO")
-      .slice(0,6);
-
-
-  document.getElementById("riskCount")
-    .textContent=risks.length+" flags";
+    container.innerHTML = "";
 
 
-  if(!risks.length){
-
-    container.innerHTML=`
-      <div class="finding">
-        <div class="finding-icon">✓</div>
-        <div>
-          <strong>No major risks detected</strong>
-          <p>The stylesheet looks clean.</p>
-        </div>
-      </div>
-    `;
-
-    return;
-  }
+    const entries =
+        Object.entries(properties)
+            .sort((a,b) => b[1] - a[1])
+            .slice(0, 12);
 
 
-  risks.forEach(item=>{
+    if (!entries.length) {
 
-    const el =
-      document.createElement("div");
+        container.innerHTML =
+            `<div style="color:#748191;font-size:11px">
+                No properties found.
+            </div>`;
 
-    el.className =
-      "finding " +
-      (item.type==="HIGH" ? "danger":"");
+        return;
+    }
 
 
-    el.innerHTML=`
+    const max =
+        entries[0][1];
 
-      <div class="finding-icon">
-        ${item.type==="HIGH" ? "!" : "!"}
-      </div>
 
-      <div>
+    entries.forEach(([property, count]) => {
 
-        <strong>
-          ${escapeHTML(item.issue)}
-        </strong>
+        const row =
+            document.createElement("div");
 
-        <p>
-          ${escapeHTML(item.message)}
-        </p>
+        row.className = "chart-row";
 
-      </div>
-    `;
 
-    container.appendChild(el);
+        const name =
+            document.createElement("span");
 
-  });
+        name.textContent = property;
 
+
+        const track =
+            document.createElement("div");
+
+        track.className = "chart-track";
+
+
+        const fill =
+            document.createElement("i");
+
+        fill.style.width =
+            `${(count / max) * 100}%`;
+
+
+        const total =
+            document.createElement("strong");
+
+        total.textContent = count;
+
+
+        track.appendChild(fill);
+
+        row.appendChild(name);
+        row.appendChild(track);
+        row.appendChild(total);
+
+
+        container.appendChild(row);
+
+    });
 }
 
 
-function renderFindings(findings){
+/* ---------------------------------------------------------
+   EXPORT
+   --------------------------------------------------------- */
 
-  const table =
-    document.getElementById("findingTable");
+exportButton.addEventListener("click", () => {
 
-  table.innerHTML="";
+    const result = analyzeCSS();
 
-  document.getElementById("findingCount")
-    .textContent=findings.length;
+    if (!result) {
+        return;
+    }
 
 
-  if(!findings.length){
-
-    table.innerHTML=`
-      <div style="padding:18px;color:#778494;font-size:11px">
-        ✓ No findings. Your stylesheet passed the forensic scan.
-      </div>
-    `;
-
-    return;
-  }
-
-
-  findings.forEach(item=>{
-
-    const row =
-      document.createElement("div");
-
-    row.className="row";
-
-    const severity =
-      item.type==="HIGH"
-        ? "high"
-        : item.type==="MEDIUM"
-        ? "medium"
-        : "info";
-
-
-    row.innerHTML=`
-
-      <div class="severity ${severity}">
-        ${item.type}
-      </div>
-
-      <div class="issue">
-        ${escapeHTML(item.issue)}
-        <div style="color:#566372;margin-top:3px;font-size:9px">
-          ${escapeHTML(item.message)}
-        </div>
-      </div>
-
-      <div class="line">
-        ${item.line === "—" ? "GLOBAL" : "LINE "+item.line}
-      </div>
-
-    `;
-
-    table.appendChild(row);
-
-  });
-
-}
-
-
-function renderChart(properties){
-
-  const chart =
-    document.getElementById("chart");
-
-  chart.innerHTML="";
-
-
-  const entries =
-    Object.entries(properties)
-      .sort((a,b)=>b[1]-a[1])
-      .slice(0,12);
-
-
-  if(!entries.length){
-
-    chart.innerHTML =
-      '<div style="color:#778494;font-size:11px">No properties found.</div>';
-
-    return;
-  }
-
-
-  const max =
-    entries[0][1];
-
-
-  entries.forEach(([property,count])=>{
-
-    const row =
-      document.createElement("div");
-
-    row.className="chart-row";
-
-    row.innerHTML=`
-
-      <span>${escapeHTML(property)}</span>
-
-      <div class="chart-track">
-        <i style="width:${count/max*100}%"></i>
-      </div>
-
-      <strong>${count}</strong>
-
-    `;
-
-    chart.appendChild(row);
-
-  });
-
-}
-
-
-function escapeHTML(value){
-
-  return String(value)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&#039;");
-
-}
-
-
-/*
- SAMPLE
-*/
-
-function loadSample(){
-
-  cssInput.value=sampleCSS;
-
-  updateEditor();
-
-  document.getElementById("status")
-    .textContent="SAMPLE LOADED";
-
-}
-
-
-document.getElementById("sample")
-  .onclick=loadSample;
-
-document.getElementById("emptySample")
-  .onclick=loadSample;
-
-
-document.getElementById("analyze")
-  .onclick=analyzeCSS;
-
-
-/*
- EXPORT
-*/
-
-document.getElementById("export")
-  .onclick=()=>{
-
-    const result=analyzeCSS();
-
-    if(!result) return;
+    const json =
+        JSON.stringify(result, null, 2);
 
 
     const blob =
-      new Blob(
-        [JSON.stringify(result,null,2)],
-        {type:"application/json"}
-      );
+        new Blob(
+            [json],
+            {
+                type: "application/json"
+            }
+        );
 
 
     const url =
-      URL.createObjectURL(blob);
+        URL.createObjectURL(blob);
 
 
-    const a =
-      document.createElement("a");
+    const link =
+        document.createElement("a");
 
-    a.href=url;
+    link.href = url;
+    link.download = "css-forensics-report.json";
 
-    a.download="css-forensics-report.json";
+    document.body.appendChild(link);
 
-    a.click();
+    link.click();
+
+    link.remove();
 
     URL.revokeObjectURL(url);
-
-  };
-
-
-/*
- KEYBOARD SHORTCUT
-*/
-
-cssInput.addEventListener("keydown",event=>{
-
-  if(
-    (event.ctrlKey || event.metaKey) &&
-    event.key==="Enter"
-  ){
-
-    event.preventDefault();
-
-    analyzeCSS();
-
-  }
 
 });
 
 
-updateEditor();
+/* ---------------------------------------------------------
+   ANALYZE BUTTON
+   --------------------------------------------------------- */
+
+analyzeButton.addEventListener(
+    "click",
+    analyzeCSS
+);
+
+
+/* ---------------------------------------------------------
+   KEYBOARD SHORTCUT
+   --------------------------------------------------------- */
+
+cssInput.addEventListener("keydown", event => {
+
+    if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "Enter"
+    ) {
+
+        event.preventDefault();
+
+        analyzeCSS();
+
+    }
+
+});
+
+
+/* ---------------------------------------------------------
+   INITIAL STATE
+   --------------------------------------------------------- */
+
+updateEditorInfo();
 
 </script>
 
