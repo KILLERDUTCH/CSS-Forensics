@@ -1,12 +1,20 @@
-🕵️ CSS Forensics
+CSS Forensics
 
-«A client-side CSS intelligence & forensic analysis toolkit.»
+«A lightweight client-side CSS intelligence & forensic analysis toolkit.»
 
-CSS Forensics is a lightweight developer tool for analyzing CSS stylesheets and detecting common maintainability, consistency, and code-quality issues.
+CSS Forensics analyzes raw CSS and turns it into a structured report that helps developers identify suspicious patterns, duplication, excessive overrides, high specificity, and other maintainability issues.
 
-It scans your stylesheet directly in the browser and turns raw CSS into a structured forensic report — including selector statistics, declaration counts, repeated declarations, "!important" usage, color systems, suspicious "z-index" values, property frequency, and more.
+Built entirely with HTML, CSS, and Vanilla JavaScript — with no backend, dependencies, build tools, or installation required.
 
-No backend. No framework. No build step. Your CSS stays in your browser.
+---
+
+🌐 Live Demo
+
+Try CSS Forensics directly in your browser:
+
+"→ Launch CSS Forensics" (https://killerdutch.github.io/CSS-Forensics/)
+
+«100% client-side: Your CSS is analyzed locally inside your browser and is never uploaded to a server.»
 
 ---
 
@@ -22,47 +30,39 @@ Get an instant overview of your stylesheet:
 - Duplicate declarations
 - Unique colors
 - Property frequency
-- Number of detected findings
+- Total findings
 
 ---
 
-🚨 Risk Detection
+🚨 Forensic Risk Detection
 
-CSS Forensics searches for patterns that can make a stylesheet harder to maintain.
+CSS Forensics searches for patterns that may indicate maintainability problems.
 
 Currently detects:
 
 - Excessive "!important"
-- Repeated declarations
-- Duplicate property/value combinations
-- Extremely high "z-index" values
+- Duplicate declarations
+- Repeated property/value combinations
+- High "z-index" values
+- High selector specificity
+- Deep selectors
 - Large color systems
 - Repeated CSS values
-- Potential maintainability issues
 
 Findings are categorized by severity:
 
 Severity| Meaning
-🔴 "HIGH"| Potentially problematic pattern
+🔴 "HIGH"| A potentially problematic pattern
 🟡 "MEDIUM"| Something worth reviewing
 🔵 "INFO"| Informational observation
 
 ---
 
-🎨 Color System Analysis
+🎨 Color Analysis
 
-CSS Forensics extracts colors from your stylesheet and calculates how frequently each one appears.
+The analyzer extracts colors used throughout the stylesheet and calculates their frequency.
 
-Example:
-
-COLOR SYSTEM
-
-#ffffff  ███████████████████  17
-#111111  ███████████          10
-#6c5ce7  ██████                6
-#ff4757  ███                   3
-
-Supported color formats include:
+Supported formats include:
 
 #fff
 #ffffff
@@ -79,55 +79,68 @@ blue
 green
 black
 white
-...
+yellow
+orange
+purple
+gray
+grey
+transparent
 
-This can help identify unnecessarily fragmented color systems and repeated hard-coded values.
+Example:
+
+COLOR SYSTEM
+
+#ffffff   ███████████████   12
+#111111   ███████████        9
+#6c5ce7   ██████             5
+#ff4757   ███                3
+
+This makes it easier to spot fragmented or unnecessarily large color systems.
 
 ---
 
 📈 Property Frequency
 
-The analyzer also calculates which CSS properties appear most frequently.
+CSS Forensics analyzes which CSS properties appear most frequently.
 
 Example:
 
 PROPERTY FREQUENCY
 
-color        █████████████████  18
-padding      ███████████        12
-margin       █████████           9
-background   ███████             7
-display      █████               5
+color        █████████████████   18
+padding      ███████████         12
+margin       █████████            9
+background   ███████              7
+display      █████                5
 
-This gives you a quick overview of the structure and habits inside a stylesheet.
+Useful for quickly understanding the structure and patterns of a stylesheet.
 
 ---
 
-🔍 Duplicate Detection
+♻️ Duplicate Detection
 
-One of the main purposes of CSS Forensics is finding repeated declarations.
+CSS Forensics detects duplicate declarations inside CSS rules and repeated property/value combinations across rules.
 
-For example:
+Example:
 
 .card {
     padding: 20px;
     padding: 20px;
 }
 
-CSS Forensics reports:
+The analyzer reports:
 
 HIGH
+
 Duplicate padding: 20px
 
-Same declaration appears repeatedly.
-
-It can also detect repeated property/value combinations across different selectors.
+Same declaration appears twice in one rule.
 
 ---
 
 ⚠️ "!important" Detection
 
-Using "!important" isn't automatically wrong, but excessive usage can indicate problems with specificity or the cascade.
+"!important" isn't automatically bad, but excessive usage can make the CSS cascade harder to reason about.
 
 Example:
 
@@ -135,13 +148,13 @@ Example:
     color: white !important;
 }
 
-.card {
-    background: red !important;
+.modal {
+    z-index: 9999 !important;
 }
 
-The analyzer tracks these occurrences and reports them.
+CSS Forensics tracks these occurrences and reports them as forensic findings.
 
-For larger usage:
+If the stylesheet contains heavy usage, it can also generate a global warning:
 
 HIGH
 
@@ -153,17 +166,15 @@ Heavy !important usage
 
 🧱 High "z-index" Detection
 
-Extremely large stacking values are often a sign of a stylesheet that has accumulated arbitrary values over time.
+Extremely large "z-index" values can be a sign of an uncontrolled stacking system.
 
-For example:
+Example:
 
 .modal {
     z-index: 99999;
 }
 
-CSS Forensics flags values above the configured threshold.
-
-Example:
+CSS Forensics flags values above the configured threshold:
 
 MEDIUM
 
@@ -173,9 +184,37 @@ Extremely high stacking value.
 
 ---
 
+🎯 Specificity Analysis
+
+CSS Forensics calculates selector specificity and flags selectors with unusually high specificity.
+
+For example:
+
+#app .page .content .sidebar .menu a.active {
+    color: red;
+}
+
+The analyzer calculates a specificity score and reports potentially difficult-to-override selectors.
+
+---
+
+🪆 Deep Selector Detection
+
+Deeply nested selectors can increase coupling and make styles harder to maintain.
+
+Example:
+
+.page .content .sidebar .menu ul li a span {
+    color: white;
+}
+
+CSS Forensics detects selectors with excessive nesting depth and reports them for review.
+
+---
+
 🖥️ Interface
 
-The UI is designed around a forensic / developer-tool aesthetic.
+The interface is designed around a dark, technical developer-tool aesthetic.
 
 ┌─────────────────────────────────────────────────────────────┐
 │ { }  CSS FORENSICS                         LOAD   ANALYZE   │
@@ -196,31 +235,29 @@ The UI is designed around a forensic / developer-tool aesthetic.
 │                                                             │
 └─────────────────────────────────────────────────────────────┘
 
-The interface is:
+The UI is:
 
 - Dark themed
 - Responsive
 - Keyboard-friendly
 - Dependency-free
-- Designed for developer workflows
+- Built for developer workflows
 
 ---
 
 🚀 Getting Started
 
-CSS Forensics doesn't require Node.js, npm, a server, or any build system.
+CSS Forensics requires no Node.js, npm, server, or build process.
 
-1. Clone the repository
+Clone the repository
 
 git clone https://github.com/KILLERDUTCH/CSS-Forensics.git
 
-2. Open the project
+Open the project
 
 cd CSS-Forensics
 
-3. Run it
-
-Simply open:
+Then simply open:
 
 index.html
 
@@ -232,7 +269,7 @@ That's it.
 
 🧩 Usage
 
-Step 1 — Paste CSS
+1. Paste CSS
 
 Paste your stylesheet into the editor.
 
@@ -242,7 +279,7 @@ body {
     background: #111;
 }
 
-Step 2 — Analyze
+2. Analyze
 
 Click:
 
@@ -252,23 +289,29 @@ or use:
 
 CTRL + ENTER
 
-Step 3 — Inspect the report
+On macOS:
 
-The dashboard will generate:
+CMD + ENTER
 
-- Statistics
+3. Inspect the report
+
+The dashboard generates:
+
+- Stylesheet statistics
 - Color analysis
 - Risk signals
-- Findings
+- Detailed findings
 - Property frequency
+- Specificity warnings
+- Selector depth warnings
 
-Step 4 — Export
+4. Export
 
-Click:
+Use:
 
 EXPORT JSON
 
-to generate:
+to export the analysis report as:
 
 css-forensics-report.json
 
@@ -288,7 +331,7 @@ BROWSER
    ├── Parser
    ├── Analyzer
    ├── Detector
-   └── Report Generator
+   └── Report Builder
    │
    ▼
 FORENSIC REPORT
@@ -297,39 +340,18 @@ There is currently:
 
 - ❌ No backend
 - ❌ No database
-- ❌ No account
-- ❌ No upload API
-- ❌ No analytics service
-- ❌ No external CSS framework
+- ❌ No account system
+- ❌ No CSS upload service
+- ❌ No analytics dependency
+- ❌ No external framework
 
 Your CSS does not need to leave your browser.
-
-🌐 Live Demo
-
-Try CSS Forensics directly in your browser — no installation or setup required.
-
-▶️ "Launch CSS Forensics" (https://killerdutch.github.io/CSS-Forensics/)
-
-«100% client-side: Your CSS is analyzed locally in your browser and is never uploaded to a server.»
-
-Paste your stylesheet, run the forensic scan, and instantly inspect:
-
-- 📊 CSS statistics
-- 🚨 Risk signals
-- 🎨 Color usage
-- ♻️ Duplicate declarations
-- ⚠️ "!important" usage
-- 🧱 High "z-index" values
-- 📈 Property frequency
-- 📤 JSON reports
-
-No account. No backend. No dependencies.
 
 ---
 
 🧠 How It Works
 
-The analysis pipeline is intentionally simple and transparent.
+The analyzer follows a lightweight processing pipeline:
 
 CSS Input
     │
@@ -349,75 +371,82 @@ Property Stats    Color Detection
     ▼               ▼
 Duplicate Scan   Color Frequency
     │               │
-    └───────┬───────┘
-            ▼
-       Risk Analysis
-            │
-            ▼
-       Report Builder
-            │
-            ▼
-      Interactive UI
+    ├───────────────┤
+    ▼
+Specificity Analysis
+    │
+    ▼
+Selector Depth Analysis
+    │
+    ▼
+Risk Detection
+    │
+    ▼
+Report Generation
+    │
+    ▼
+Interactive Dashboard
 
-The current parser uses browser-side JavaScript and regular-expression-based extraction.
+The current implementation uses browser-side JavaScript with a lightweight parser and pattern-based analysis.
 
-This makes the project intentionally lightweight, but also means it is not intended to replace a full CSS parser or production-grade linter.
+This keeps the project fast and dependency-free.
 
 ---
 
 🛠️ Tech Stack
 
-CSS Forensics is intentionally built without frameworks.
+CSS Forensics intentionally avoids frameworks and external dependencies.
 
-Core
+Core Technologies
 
 - HTML5
 - CSS3
 - Vanilla JavaScript
 - DOM APIs
 - Blob API
-- Local browser processing
+- Browser APIs
 
-No dependencies
+Dependencies
 
 0 npm packages
 0 frameworks
 0 build tools
 0 backend services
 
-This makes the project extremely easy to run, fork, modify, and understand.
-
 ---
 
 📁 Project Structure
 
-The entire application is currently contained inside a single file:
+The application is intentionally contained in a single HTML file.
 
 CSS-Forensics/
 │
 ├── index.html
 └── README.md
 
-The HTML file contains:
+"index.html" contains:
 
-index.html
+HTML
 │
-├── HTML
-├── <style>
-│   └── Complete UI
+├── Interface
 │
-└── <script>
-    └── Analyzer
+├── CSS
+│   └── Complete UI styling
+│
+└── JavaScript
+    ├── CSS parser
+    ├── Analyzer
+    ├── Detectors
+    ├── Report generator
+    └── JSON exporter
 
-This structure is intentional for the current version.
-
-It allows the project to be downloaded or cloned and opened immediately without installing anything.
+This makes the project extremely easy to run, inspect, fork, and modify.
 
 ---
 
 🧪 Example
 
-Input:
+Given this stylesheet:
 
 body {
     color: #ffffff;
@@ -433,23 +462,10 @@ body {
 
 .button {
     color: #ffffff !important;
+    z-index: 99999;
 }
 
-Possible report:
-
-SELECTORS
-3
-
-DECLARATIONS
-8
-
-!IMPORTANT
-2
-
-DUPLICATES
-1
-
-Findings:
+CSS Forensics can produce findings such as:
 
 HIGH
 Duplicate padding: 20px
@@ -458,37 +474,50 @@ MEDIUM
 High z-index: 9999
 
 MEDIUM
+High z-index: 99999
+
+MEDIUM
 !important used on background
 
 MEDIUM
 !important used on color
 
+And statistics such as:
+
+SELECTORS       3
+DECLARATIONS    8
+!IMPORTANT      2
+DUPLICATES      1
+
 ---
 
-📤 JSON Export
+📤 JSON Reports
 
-Analysis reports can be exported as JSON.
+Analysis results can be exported as JSON.
 
-Example structure:
+Example:
 
 {
+  "version": "1.0",
+  "analyzedAt": "2026-09-01T00:00:00.000Z",
   "selectors": 3,
   "declarations": 8,
   "important": 2,
-  "colors": {
-    "#ffffff": 2,
-    "#111111": 2
-  },
+  "uniqueColors": 2,
   "properties": {
     "color": 2,
     "background": 2,
     "padding": 2,
-    "z-index": 1
+    "z-index": 2
+  },
+  "colors": {
+    "#ffffff": 2,
+    "#111111": 2
   },
   "findings": []
 }
 
-This makes it possible to use the analysis data in future automation tools.
+The exported format can also serve as a foundation for future automation and integrations.
 
 ---
 
@@ -502,110 +531,118 @@ Shortcut| Action
 
 📱 Responsive Design
 
-CSS Forensics works across:
+CSS Forensics adapts to different screen sizes:
 
 - Desktop
 - Laptop
 - Tablet
 - Mobile
 
-On smaller screens, the editor and report automatically switch to a single-column layout.
+On smaller screens, the editor and analysis dashboard switch to a single-column layout.
 
 ---
 
 🗺️ Roadmap
 
-The current version is only the beginning.
+CSS Forensics is still evolving.
 
-v1.x
+Current
 
 - [x] CSS statistics
 - [x] Selector counting
 - [x] Declaration counting
 - [x] "!important" detection
 - [x] Duplicate detection
+- [x] Repeated declaration detection
 - [x] Color extraction
+- [x] Color frequency analysis
 - [x] Property frequency
 - [x] High "z-index" detection
+- [x] Specificity analysis
+- [x] Deep selector detection
 - [x] Risk signals
 - [x] JSON export
-- [x] Responsive UI
+- [x] Responsive interface
 
-v2.x
+Planned
 
-- [ ] Specificity analyzer
 - [ ] Unused selector detection
 - [ ] Duplicate selector detection
+- [ ] CSS variable analysis
 - [ ] CSS variable recommendations
-- [ ] Repeated value detection
 - [ ] Shorthand property detection
-- [ ] Deep nesting detection
 - [ ] "@media" analysis
+- [ ] "@supports" analysis
+- [ ] "@layer" analysis
 - [ ] "@keyframes" analysis
-- [ ] "calc()" analysis
-- [ ] "var()" dependency graph
-
-v3.x
-
+- [ ] Advanced value analysis
+- [ ] CSS health score
+- [ ] Before / after comparison
 - [ ] Interactive specificity graph
 - [ ] CSS cascade visualizer
-- [ ] Selector dependency map
-- [ ] Advanced parser
-- [ ] Performance heuristics
-- [ ] Large stylesheet optimization
-- [ ] Before / after comparison
-- [ ] Shareable reports
+- [ ] Advanced CSS parser
 - [ ] CLI version
 - [ ] GitHub Action
 
 ---
 
-💡 Future Vision
+💡 Vision
 
-The long-term goal isn't to make another CSS formatter.
+CSS Forensics isn't intended to be another CSS formatter.
 
-CSS Forensics aims to become a small CSS intelligence platform.
+The goal is to build a lightweight CSS intelligence tool that helps developers understand what is happening inside a stylesheet.
 
-Instead of simply asking:
+Instead of only asking:
 
 «"Is this CSS valid?"»
 
-the project focuses on questions such as:
-
-«"Why is this stylesheet becoming difficult to maintain?"»
+CSS Forensics focuses on questions like:
 
 «"Where are the suspicious patterns?"»
 
-«"What parts of this CSS deserve attention?"»
+«"Why is this stylesheet becoming difficult to maintain?"»
+
+«"Which selectors deserve attention?"»
 
 «"How consistent is this stylesheet?"»
 
-That distinction is the core idea behind the project.
+«"Where is the cascade becoming unnecessarily complex?"»
+
+That is the core idea behind CSS Forensics.
 
 ---
 
 🤝 Contributing
 
-Contributions are welcome.
+Contributions, ideas, and improvements are welcome.
 
-If you have an idea for a new detector, UI improvement, parser enhancement, or performance optimization:
+1. Fork the repository
 
-1. Fork the repository.
-2. Create a feature branch.
+2. Create a feature branch
 
 git checkout -b feature/my-feature
 
-3. Make your changes.
-4. Test the project locally.
-5. Commit your changes.
+3. Make your changes
+
+4. Test the project locally
+
+5. Commit your changes
 
 git commit -m "Add my feature"
 
-6. Push the branch.
+6. Push your branch
 
 git push origin feature/my-feature
 
-7. Open a Pull Request.
+7. Open a Pull Request
+
+For new detectors, please explain:
+
+- What pattern is being detected
+- Why it matters
+- How it should be classified
+- Example CSS
+- Expected analyzer output
 
 ---
 
@@ -613,34 +650,26 @@ git push origin feature/my-feature
 
 Found a bug?
 
-Open an issue and include:
+Open an issue with:
 
 - Browser
-- OS
-- CSS that reproduces the issue
+- Operating system
+- CSS that reproduces the problem
 - Expected behavior
 - Actual behavior
-- Screenshot if applicable
+- Screenshot, if useful
 
-The more reproducible the issue is, the easier it is to fix.
+A minimal reproducible example is always appreciated.
 
 ---
 
 ⚠️ Limitations
 
-The current parser is intentionally lightweight.
+CSS Forensics currently uses a lightweight browser-side parser rather than a complete CSS specification parser.
 
-It is not a replacement for:
+Because of this, some advanced or highly unusual CSS syntax may not be interpreted perfectly.
 
-- Stylelint
-- PostCSS
-- CSSTree
-- Browser DevTools
-- Full CSS parsers
-
-Complex CSS constructs may not always be interpreted perfectly.
-
-For example:
+Examples include:
 
 @supports (...) {
     ...
@@ -654,15 +683,17 @@ For example:
     ...
 }
 
-Advanced parsing is planned for future versions.
+Complex nested structures, unusual syntax, and edge cases may require a more advanced parser.
+
+A more robust parsing engine is planned for future versions.
 
 ---
 
-📜 License
+📄 License
 
-This project is open-source.
+This project is open source.
 
-See the repository license for the exact terms.
+See the repository's "LICENSE" file for the exact license terms.
 
 ---
 
@@ -680,6 +711,7 @@ https://github.com/KILLERDUTCH
 
 Inspect. Detect. Understand.
 
-Made with HTML, CSS & JavaScript.
+Built with HTML, CSS & Vanilla JavaScript.
 
 </div>
+```
